@@ -1,0 +1,33 @@
+ratings:
+user_id : integer
+movie_id : integer
+rating : integer
+timestamp : datetime
+
+movie:
+movie_id : integer
+movie_title : string
+release_date : datetime
+video_release_date :datetime
+IMDb_URL : string
+
+user:
+user_id : integer 
+age : integer
+gender : string
+occupation : string
+zip_code : string
+email : optional string
+password : optional string
+
+relationships
+user has many ratings
+ratings belong to a user
+ratings belong to a movies
+movies have many ratings
+
+A user has many movies through ratings
+A movie has many users through ratings
+
+
+

@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1> Login</h1>
+<form method="POST", action= "/authenticate">
+	<input type="string" name="email"></input>
+	<input type="password" name="password"></input>
+	<input type="submit">
+</form>
+{% endblock %}

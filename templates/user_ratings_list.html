@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>User Ratings List</h1>
+<table>
+	<tr>
+		<th>Rating Id</th>
+		<th>Movie Title</th>
+		<th>User Rating</th>
+	</tr>
+{% for ratings in u_ratings_list %}
+	<tr>
+		<td>{{ ratings.id }}</td>
+		<td>{{ ratings.movie.movie_title }}</td> 
+		<td>{{ ratings.rating }}</td>
+	</tr>
+{% endfor %}
+</table>
+
+{% endblock %}

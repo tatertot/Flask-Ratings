@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block body %}
+<h3>Hello,  {{ user_name}}!</h3>
+<h1>User List</h1>
+{% for user in users %}
+<h2><a href="/user_ratings_list/{{ user.id }}">{{ user.id }}, age {{ user.age }} has {{ user.ratings|length }} ratings</a></h2>
+{% endfor %}
+
+{% endblock %}
+

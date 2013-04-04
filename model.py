@@ -2,14 +2,21 @@ import datetime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, String, DateTime
-from sqlalchemy.orm import sessionmaker, relationship, backref
+from sqlalchemy.orm import sessionmaker, scoped_session, relationship, backref
 from sqlalchemy import ForeignKey
 
-ENGINE = None
-Session = None
 
+# There is a side effect of this change. You no longer need to instantiate the 
+# Session class, as it doesn't exist. It's replaced with a session object that 
+# is somehow always connected. On top of that, this is safe to use this session 
+# directly without explicitly connecting to the database
+
+#This is SQLAlchemy's way of interacting with the db, creating a session
+engine = create_engine("sqlite:///ratings.db", echo=False)
+session = scoped_session(sessionmaker(bind=engine,autocommit = False, autoflush = False))
 
 Base = declarative_base() #This is required by SQLAlchemy 
+Base.query = session.query_property()
 
 ### Class declarations go here
 class User(Base):
@@ -53,15 +60,16 @@ class Rating(Base):
 
 ### End class declarations
 
-def connect():
-	global ENGINE
-	global Session
+#moving connect method so we can do multithreading for mulit user application
+#def connect(): 
+	# global ENGINE
+	# global Session
 
-	#This is SQLAlchemy's way of interacting with the db, creating a session
-	ENGINE = create_engine("sqlite:///ratings.db", echo=True)
-	Session = sessionmaker(bind=ENGINE)
+	# #This is SQLAlchemy's way of interacting with the db, creating a session
+	# ENGINE = create_engine("sqlite:///ratings.db", echo=True)
+	# Session = sessionmaker(bind=ENGINE)
 
-	return Session()
+	# return Session()
 def main():
     """In case we need this for something"""
     pass

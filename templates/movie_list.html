@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>Movie List</h1>
+<table>
+	<tr>
+		<th>Movie Id</th>
+		<th>Movie Title</th>
+		<th>Average Rating</th>
+	</tr>
+{% for movie in movie_list %}
+	<tr>
+		<td>{{ movie.id }}</td>
+		<td><a href='{{ url_for("movie", id=movie['id']) }}'>{{ movie.movie_title }}</a></td> 
+
+		<td></td>
+	</tr>
+{% endfor %}
+</table>
+
+{% endblock %}

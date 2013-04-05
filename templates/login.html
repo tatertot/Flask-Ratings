@@ -1,9 +1,12 @@
 {% extends "layout.html" %}
 {% block body %}
-<h1> Login</h1>
-<form method="POST", action= "/authenticate">
-	<input type="string" name="email"></input>
-	<input type="password" name="password"></input>
-	<input type="submit">
+<form method="POST", action='{{ url_for("authenticate") }}' class="form-signin">
+	
+	<h2 class="form-signin-heading">Login</h2>
+	<label for="email">Email</label>
+	<input type="text" class="input-block-level" placeholder="Email address" name="email"></input>
+	<label for="password">Password</label>
+	<input type="password" class="input-block-level" name="password"></input><br />
+	<input type="submit" class="btn btn-large btn-primary" value="sign up">
 </form>
 {% endblock %}

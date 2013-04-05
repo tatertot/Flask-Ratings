@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
 
-<form method="POST", action= "/create_user" class="form-signin">
+<form method="POST", action='{{ url_for("create_user") }}' class="form-signin">
 	<h2 class="form-signin-heading">Sign Up</h2>
 	<label for="email">Email</label>
 	<input type="text" class="input-block-level" placeholder="Email address" name="email"></input>
@@ -9,7 +9,7 @@
 	<input type="text" class="input-block-level" placeholder="Age" name="age"></input>
 	<label for="zipcode">Zip Code</label>
 	<input type="text" class="input-block-level" placeholder="Zip Code" name="zipcode"></input>
-	<label for="password">Password</label>
+	<label for="password" class="input-block-level">Password</label>
 	<input type="password" name="password"></input><br />
 	<input type="submit" class="btn btn-large btn-primary" value="sign up">
 </form>

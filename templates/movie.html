@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>Movie List</h1>
+<table>
+	<tr>
+		<th>Movie Id</th>
+		<th>Movie Title</th>
+		<th>Average Rating</th>
+	</tr>
+
+	<tr>
+		<td>{{ movie[0].movie_id }}</td>
+		<td>{{ movie[0].movie.movie_title }}</td> 
+		<td></td>
+	</tr>
+
+</table>
+<p>rating_status: {{ rating_status }}</p>
+{% if rating_status == True %} 
+
+<p><a href='{{ url_for("user_movie_rating", movie_id=movie[0].movie_id, user_id=user_id ) }}'>Edit Rating</a></p>
+
+{% else %}
+<p>Add Rating</p>
+<form method="POST", action="/rate_movie" class="form-signin">
+	
+	<h2 class="form-signin-heading">User #{{ user_id }}'s Movie Rating For:<br />
+	{{ movie[0].movie.movie_title }}
+	</h2>
+	<input type="hidden" value="{{ user_id }}" name="user_id" />
+	<input type="hidden" value="{{ movie[0].movie_id }}" name="movie_id" />
+	<label for="rating">Rating</label>
+	<input type="text" class="input-block-level" name="rating" value=""></input><br />
+	<input type="submit" class="btn btn-large btn-primary" value="Submit Rating">
+</form>
+{% endif %}
+
+
+
+{% endblock %}
+

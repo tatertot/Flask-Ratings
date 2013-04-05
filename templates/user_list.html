@@ -1,9 +1,14 @@
 {% extends "layout.html" %}
 {% block body %}
-<h3>Hello,  {{ user_name}}!</h3>
-<h1>User List</h1>
+<h3>Hello,  {{ user_id}}!</h3>
+
+{% if user_id %} 
+<h1><a href='{{ url_for("user_ratings_list", id=user_id) }}'>My List of Movie Ratings</a></h1>
+{% endif %}
+
+<h2>Complete User List</h2>
 {% for user in users %}
-<h2><a href="/user_ratings_list/{{ user.id }}">{{ user.id }}, age {{ user.age }} has {{ user.ratings|length }} ratings</a></h2>
+<h2><a href='{{ url_for("user_ratings_list", id=user.id) }}'>{{ user.id }}, age {{ user.age }} has {{ user.ratings|length }} ratings</a></h2>
 {% endfor %}
 
 {% endblock %}

@@ -58,6 +58,7 @@ class Rating(Base):
 	user = relationship("User", backref=backref("ratings", order_by=id))
 	movie = relationship("Movie", backref=backref("ratings",order_by=id))
 
+
 ### End class declarations
 
 #moving connect method so we can do multithreading for mulit user application

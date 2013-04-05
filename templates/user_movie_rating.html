@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block body %}
+<form method="POST", action="/rate_movie" class="form-signin">
+	
+	<h2 class="form-signin-heading">Edit User #{{ ind_rating.user_id }}'s Movie Rating For:<br />
+	{{ ind_rating.movie.movie_title }}
+	</h2>
+	<input type="hidden" value="{{ ind_rating.id }}" name="rating_id" />
+	<input type="hidden" value="{{ ind_rating.user_id }}" name="user_id" />
+	<input type="hidden" value="{{ ind_rating.movie_id }}" name="movie_id" />
+	<label for="rating">Rating</label>
+	<input type="text" class="input-block-level" name="rating" value="{{ ind_rating.rating }}"></input><br />
+	<input type="submit" class="btn btn-large btn-primary" value="Submit Rating">
+</form>
+{% endblock %}

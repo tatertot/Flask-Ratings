@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
-<h1>User Ratings List</h1>
+<h1>User {{ u_ratings_list[0].user_id }}: Ratings List</h1>
 <table>
 	<tr>
 		<th>Rating Id</th>
@@ -10,10 +10,11 @@
 {% for ratings in u_ratings_list %}
 	<tr>
 		<td>{{ ratings.id }}</td>
-		<td>{{ ratings.movie.movie_title }}</td> 
+		<td><a href='{{ url_for("movie", id=ratings.movie_id) }}'>{{ ratings.movie.movie_title }}</a></td> 
 		<td>{{ ratings.rating }}</td>
 	</tr>
 {% endfor %}
 </table>
 
 {% endblock %}
+

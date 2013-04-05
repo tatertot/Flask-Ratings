@@ -101,7 +101,7 @@ def rate_movie():
 @app.route("/movie_list")
 def movie_list():
 	movie_list_query = model.session.query(model.Movie).all()
-	return render_template("movie_list.html", movie_list = movie_list)
+	return render_template("movie_list.html", movie_list = movie_list_query)
 
 
 @app.route("/movie/<int:id>/", methods=["GET"])

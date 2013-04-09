@@ -4,6 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.orm import sessionmaker, scoped_session, relationship, backref
 from sqlalchemy import ForeignKey
+import correlation
 
 
 # There is a side effect of this change. You no longer need to instantiate the 
@@ -28,6 +29,44 @@ class User(Base):
 	password = Column(String(64), nullable  = True)
 	age = Column(Integer, nullable = True)
 	zipcode = Column(String(15),nullable=True)
+
+	def similarity(self,other):
+		#create dictionary to hold user 1's ratings
+		u_ratings = {}
+		#create pair list
+		paired_ratings = []
+
+		#put ratings in dictionary (movie_id=>rating)
+		for r in self.ratings:
+			u_ratings[r.movie_id] = r 
+
+		#loop through user2's ratings
+		for r in other.ratings:
+			#you are comparing user 2's movie id(from the rating) and checking if that movie id is in user 1's list 
+			u_r = u_ratings.get(r.movie_id) 	
+			#if ther's a match, get rating and create & add pair
+			if u_r:
+				paired_ratings.append((u_r.rating, r.rating))
+		#feed pair list to pearson function if there's at least one pair
+		if paired_ratings:
+			return correlation.pearson(paired_ratings)
+		else:
+			return 0.0
+
+	def predict_rating(user,movie):
+		ratings = user.ratings
+		other_ratings = movie.ratings
+		other_users = [ r.user for r in other_ratings ]
+		similarities = [ (user.similarity(other_user), other_user \
+			for other_user in other_users ]
+		similarities.sort(reverse = True)
+		top_user = similarities[0]
+		matched_rating = None
+		for rating in other_ratings:
+			if rating.user_id == top_user[1].id
+				matched_rating = rating
+				break
+		return matched_rating.rating * top_user[0]
 
 	# apparently don't need this function, it's optional
 	# def __init__(self,  email = None, password = None, age = None, zipcode = None):
@@ -61,6 +100,7 @@ class Rating(Base):
 
 ### End class declarations
 
+
 #moving connect method so we can do multithreading for mulit user application
 #def connect(): 
 	# global ENGINE
@@ -71,6 +111,9 @@ class Rating(Base):
 	# Session = sessionmaker(bind=ENGINE)
 
 	# return Session()
+
+
+
 def main():
     """In case we need this for something"""
     pass

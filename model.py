@@ -22,80 +22,78 @@ Base.query = session.query_property()
 ### Class declarations go here
 class User(Base):
 
-	__tablename__ = "users" # tells SQLAlchemy  instance stored in table named users
+    __tablename__ = "users" # tells SQLAlchemy  instance stored in table named users
 
-	id = Column(Integer, primary_key = True)
-	email = Column(String(64), nullable = True)
-	password = Column(String(64), nullable  = True)
-	age = Column(Integer, nullable = True)
-	zipcode = Column(String(15),nullable=True)
+    id = Column(Integer, primary_key = True)
+    email = Column(String(64), nullable = True)
+    password = Column(String(64), nullable  = True)
+    age = Column(Integer, nullable = True)
+    zipcode = Column(String(15),nullable=True)
 
-	def similarity(self,other):
-		#create dictionary to hold user 1's ratings
-		u_ratings = {}
-		#create pair list
-		paired_ratings = []
+    def similarity(self,other):
+        #create dictionary to hold user 1's ratings
+        u_ratings = {}
+        #create pair list
+        paired_ratings = []
 
-		#put ratings in dictionary (movie_id=>rating)
-		for r in self.ratings:
-			u_ratings[r.movie_id] = r 
+        #put ratings in dictionary (movie_id=>rating)
+        for r in self.ratings:
+            u_ratings[r.movie_id] = r 
 
-		#loop through user2's ratings
-		for r in other.ratings:
-			#you are comparing user 2's movie id(from the rating) and checking if that movie id is in user 1's list 
-			u_r = u_ratings.get(r.movie_id) 	
-			#if ther's a match, get rating and create & add pair
-			if u_r:
-				paired_ratings.append((u_r.rating, r.rating))
-		#feed pair list to pearson function if there's at least one pair
-		if paired_ratings:
-			return correlation.pearson(paired_ratings)
-		else:
-			return 0.0
+        #loop through user2's ratings
+        for r in other.ratings:
+            #you are comparing user 2's movie id(from the rating) and checking if that movie id is in user 1's list 
+            u_r = u_ratings.get(r.movie_id)     
+            #if ther's a match, get rating and create & add pair
+            if u_r:
+                paired_ratings.append((u_r.rating, r.rating))
+        #feed pair list to pearson function if there's at least one pair
+        if paired_ratings:
+            return correlation.pearson(paired_ratings)
+        else:
+            return 0.0
 
-	def predict_rating(user,movie):
-		ratings = user.ratings
-		other_ratings = movie.ratings
-		other_users = [ r.user for r in other_ratings ]
-		similarities = [ (user.similarity(other_user), other_user \
-			for other_user in other_users ]
-		similarities.sort(reverse = True)
-		top_user = similarities[0]
-		matched_rating = None
-		for rating in other_ratings:
-			if rating.user_id == top_user[1].id
-				matched_rating = rating
-				break
-		return matched_rating.rating * top_user[0]
+    def predict_rating(self, movie):
+        ratings = self.ratings
+        other_ratings = movie.ratings
+        similarities = [ (self.similarity(r.user), r)
+          for r in other_ratings ]
+        similarities.sort(reverse = True)
+        similarities = [ sim for sim in similarities if sim[0] > 0 ]
+        if not similarities:
+            return None
+        numerator = sum([ r.rating * similarity for similarity, r in similarities ])
+        denominator = sum([similarity[0] for similarity in similarities ])
+        return numerator/denominator
 
-	# apparently don't need this function, it's optional
-	# def __init__(self,  email = None, password = None, age = None, zipcode = None):
-	# 	self.email = email
-	# 	self.password = password
-	# 	self.age = age
-	# 	self.zipcode = zipcode
+    # apparently don't need this function, it's optional
+    # def __init__(self,  email = None, password = None, age = None, zipcode = None):
+    #   self.email = email
+    #   self.password = password
+    #   self.age = age
+    #   self.zipcode = zipcode
 
 class Movie(Base):
 
-	__tablename__ = "movies"
+    __tablename__ = "movies"
 
-	id = Column(Integer, primary_key = True)
-	movie_title = Column(String(128), nullable = True)
-	released_at = Column(DateTime(),  nullable = True)	
-	imdb_url = Column(String(128), nullable = True)
+    id = Column(Integer, primary_key = True)
+    movie_title = Column(String(128), nullable = True)
+    released_at = Column(DateTime(),  nullable = True)  
+    imdb_url = Column(String(128), nullable = True)
 
 class Rating(Base):
 
-	__tablename__ = "ratings"
+    __tablename__ = "ratings"
 
-	id = Column(Integer, primary_key = True)
-	user_id = Column(Integer(15), ForeignKey('users.id'), nullable = False)
-	movie_id = Column(Integer(15), ForeignKey('movies.id'), nullable = False)
-	rating = Column(Integer(1), nullable = False)
-	released_at = Column(DateTime(),  default=datetime.datetime.now)
+    id = Column(Integer, primary_key = True)
+    user_id = Column(Integer(15), ForeignKey('users.id'), nullable = False)
+    movie_id = Column(Integer(15), ForeignKey('movies.id'), nullable = False)
+    rating = Column(Integer(1), nullable = False)
+    released_at = Column(DateTime(),  default=datetime.datetime.now)
 
-	user = relationship("User", backref=backref("ratings", order_by=id))
-	movie = relationship("Movie", backref=backref("ratings",order_by=id))
+    user = relationship("User", backref=backref("ratings", order_by=id))
+    movie = relationship("Movie", backref=backref("ratings",order_by=id))
 
 
 ### End class declarations
@@ -103,14 +101,14 @@ class Rating(Base):
 
 #moving connect method so we can do multithreading for mulit user application
 #def connect(): 
-	# global ENGINE
-	# global Session
+    # global ENGINE
+    # global Session
 
-	# #This is SQLAlchemy's way of interacting with the db, creating a session
-	# ENGINE = create_engine("sqlite:///ratings.db", echo=True)
-	# Session = sessionmaker(bind=ENGINE)
+    # #This is SQLAlchemy's way of interacting with the db, creating a session
+    # ENGINE = create_engine("sqlite:///ratings.db", echo=True)
+    # Session = sessionmaker(bind=ENGINE)
 
-	# return Session()
+    # return Session()
 
 
 

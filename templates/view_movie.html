@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>{{ movie.movie_title}}: Movie Prediction</h1>
+
+
+{% if prediction %}
+<h3>We predict you will rate this movie {{prediction}}.</h3>
+{% endif %}
+
+
+{% endblock %}

@@ -122,6 +122,45 @@ def movie(id):
 	# after getting the session variable back, you have to point it to a page
 	return render_template("movie.html", movie = movie, user_id=user_id, rating_status=rating_status)
 
+
+@app.route("/view_movie/<int:id>/", methods=["GET"])
+def view_movie(id):
+	movie = model.session.query(model.Movie).get(id)
+	ratings = movie.ratings
+	rating_nums = []
+	user_rating = None
+	for r in ratings:
+		if r.user_id == session['user_id']:
+			user_rating = r
+		rating_nums.append(r.rating)
+	ave_rating = float(sum(rating_nums))/len(rating_nums)
+
+	#Prediction code (if user hasn't rated)
+	user = model.session.query(model.User).get(session['user_id'])
+	prediction = None
+	if not user_rating:
+		prediction = user.predict_rating(movie)
+		effective_rating = prediction
+	else: 
+		effective_rating = user_rating.rating
+
+	the_eye = model.session.query(model.User).filter_by(email="theeye@ofjudgement.com").one()
+	eye_rating = model.session.query(model.Rating).filter_by(user_id=the_eye.id, movie_id=movie.id).first()
+
+	if not eye_rating:
+		eye_rating = the_eye.predict_rating(movie)
+	else:
+		eye_rating = eye_rating.rating
+	#difference = abs(eye_rating - effective_rating)
+
+	#messages = [ "I suppose you odn't have such bad taste after all.","I regret every decision that I've...","Words fail me, as your taste in movies has clearly failed you.","That movie is great. For a clown to watch. Idiot."]
+	
+	#beratement = messages[1]
+	#end prediction
+
+	return render_template("view_movie.html", movie=movie, average=ave_rating, user_rating=user_rating, prediction=prediction)
+
+
 # set the secret key.  keep this really secret:
 app.secret_key = 'banana banana banana'
 
